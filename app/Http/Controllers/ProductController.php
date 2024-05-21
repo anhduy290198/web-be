@@ -8,11 +8,16 @@ use Illuminate\Http\Request;
 class ProductController extends Controller
 {
     public function getList (Request $request){
-        $list = Product::paginate(5);
+        try {
+            $category = $this->checkCategory($request->type);
+        $list = Product::where(['id_category' => $category])->get();
         return response()->json([
             "status" => true,
             "data" => $list
         ]);
+        } catch (\Exception $e) {
+            dd($e);
+        }
     }
     public function createProduct (Request $request){
         try {
@@ -29,5 +34,19 @@ class ProductController extends Controller
         } catch (\Throwable $e) {
             dd($e);
         }
+    }
+
+    public function checkCategory($type)  {
+        $res = '';
+        if($type === "Phone"){
+            $res = 1;
+        }else if($type === "Laptop"){
+            $res = 2;
+        }else if($type === "Tivi"){
+            $res = 3;
+        }else if($type === "Accessory"){
+            $res = 4;
+        }
+        return $res;
     }
 }
