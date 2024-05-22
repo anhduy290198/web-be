@@ -7,14 +7,14 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    public function getList (Request $request){
+    public function getListProduct (Request $request){
         try {
             $category = $this->checkCategory($request->type);
-        $list = Product::where(['id_category' => $category])->get();
-        return response()->json([
-            "status" => true,
-            "data" => $list
-        ]);
+            $list = Product::where(['id_category' => $category])->get();
+            return response()->json([
+                "status" => true,
+                "data" => $list
+            ]);
         } catch (\Exception $e) {
             dd($e);
         }
