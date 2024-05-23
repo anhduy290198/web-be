@@ -10,13 +10,20 @@ class ProductController extends Controller
 {
     public function getListProduct (Request $request){
         try {
-            $list = Product::where(['id_category' => $request->id_category])->get();
+            $query = new Product();
+            if($request->id_category){
+                $query = $query->where(['id_category' => $request->id_category]);
+            }
+            if($request->type){
+                $filter = $request->filter === 'desc' ? 'DESC' : 'ASC';
+                $query = $query->orderBy($request->type, $filter);
+            }
+            $list = $query->get();
             return response()->json([
                 "status" => true,
                 "data" => $list
             ]);
         } catch (\Exception $e) {
-            dd($e);
             return response()->json([
                 "status" => false,
                 "data" => '',
@@ -26,7 +33,7 @@ class ProductController extends Controller
     }
     public function getDetailProduct (Request $request){
         try {
-            $product = Product::where(['id' => $request->id_product])->first();
+            $product = Product::where(['id' => $request->id])->first();
             return response()->json([
                 "status" => true,
                 "data" => $product
@@ -41,7 +48,7 @@ class ProductController extends Controller
     }
     public function updateProduct (Request $request){
         try {
-            $product = Product::where(['id' => $request->id_product])->first();
+            $product = Product::where(['id' => $request->id])->first();
             if(!isset($product)){
                 throw new  \Exception('Sản phẩm không tồn tại!');
             }
@@ -66,20 +73,20 @@ class ProductController extends Controller
     }
     public function deleteProduct (Request $request){
         try {
-            $user = User::where(['username' => $request->username, 'password' => $request->password])->first();
-            if(isset($user) && $user->permission === 1){
-                $product = Product::where(['id' => $request->id_product])->first();
-                if(!isset($product)){
-                    throw new  \Exception('Sản phẩm không tồn tại!');
-                }
-                $product->delete();
-                return response()->json([
-                    "status" => true,
-                    "msg" => "Xóa sản phẩm thành công"
-                ]);
-            }else{
-                throw new  \Exception('Bạn không có quyền xóa');
+            // $user = User::where(['username' => $request->username, 'password' => $request->password])->first();
+            // if(isset($user) && $user->permission === 1){
+            $product = Product::where(['id' => $request->id])->first();
+            if(!isset($product)){
+                throw new  \Exception('Sản phẩm không tồn tại!');
             }
+            $product->delete();
+            return response()->json([
+                "status" => true,
+                "msg" => "Xóa sản phẩm thành công"
+            ]);
+            // }else{
+            //     throw new  \Exception('Bạn không có quyền xóa');
+            // }
 
         } catch (\Exception $e) {
             return response()->json([
