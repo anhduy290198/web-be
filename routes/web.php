@@ -21,6 +21,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 Route::get('/list-product', [ProductController::class,"getListProduct"]);
+Route::get('/detail-product', [ProductController::class,"getDetailProduct"]);
+Route::post('/delete-product', [ProductController::class,"deleteProduct"]);
+Route::post('/update-product', [ProductController::class,"updateProduct"]);
 Route::get('/list-category', [CategoryController::class,"getListCategory"]);
 Route::post('/create', [ProductController::class,"createProduct"]);
 
